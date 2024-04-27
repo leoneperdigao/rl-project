@@ -1,0 +1,6 @@
+gymnasium==0.29.1
+highway-env==1.8.2
+torch==2.3.0
+numpy==1.26.4
+tqdm==4.66.2
+matplotlib==3.8.4
