@@ -2,7 +2,8 @@ import torch
 import torch.nn.functional as F
 import torch.optim.lr_scheduler as lr_scheduler
 import numpy as np
-from attention import Attention
+
+from .attention import Attention
 
 class QValueNet(torch.nn.Module):
     """
@@ -18,16 +19,25 @@ class QValueNet(torch.nn.Module):
     """
     def __init__(self, hidden_dimension, action_dimension, device, ego_dim=5, oppo_dim=5):
         super(QValueNet, self).__init__()
+        # Initialize the attention module, specifying dimensions for ego and opponent inputs.
         self.attn = Attention(ego_dim, oppo_dim).to(device)
+        # Defines the input dimension for the first linear layer based on the attention embedding size.
         layer1 = self.attn.embed_dim
-        layer_dims = [layer1] + hidden_dimension
+
+        # Assembles all layer dimensions starting with the output dimension of the attention layer.
+        layer_dims = [layer1, ] + hidden_dimension
+
+         # Creates a series of linear layers based on the dimensions in layer_dims.
         self.fc_layers = torch.nn.ModuleList(
             [torch.nn.Linear(layer_dims[i], layer_dims[i + 1]).to(device) for i in range(len(hidden_dimension))]
         )
         self.fc_out = torch.nn.Linear(hidden_dimension[-1], action_dimension).to(device)
 
+    # @override
     def forward(self, x):
         """Forward pass for generating Q-values from state input using attention and fully connected layers."""
+
+        # Handles different input shapes, applying attention based on the shape.
         if len(x.shape) > 2:
             x = self.attn(x[:, 0, :], x[:, :, :])
         else:
@@ -71,6 +81,7 @@ class DDQN(torch.nn.Module):
 
         self.q_net = QValueNet(hidden_dimension, action_dimension, self.device).to(self.device)
         self.target_q_net = QValueNet(hidden_dimension, action_dimension, self.device).to(self.device)
+        # Set up the optimizer and a scheduler for adjusting the learning rate.
         self.optimizer = torch.optim.Adam(self.q_net.parameters(), lr=learning_rate)
         self.scheduler = lr_scheduler.LinearLR(self.optimizer, start_factor=1.0, end_factor=0.1, total_iters=100)
         self.action_dim = action_dimension
@@ -100,7 +111,7 @@ class DDQN(torch.nn.Module):
         """Decays epsilon value multiplicatively to reduce the exploration over time."""
         self.epsilon *= 0.9
 
-    def update(self, transition_dict):
+    def update(self, transition_dict: dict):
         """Performs a single update step on the Q-network based on a batch of transitions."""
         # Creating a tensor from a list of numpy.ndarrays is extremely slow. 
         # So, we need to convert the list to a single numpy.ndarray with numpy.array() before converting to a tensor.
@@ -120,12 +131,20 @@ class DDQN(torch.nn.Module):
         next_actions = self.q_net(next_states_tensor).max(1)[1].view(-1, 1)  # Getting the max action indices
         max_next_q_values = self.target_q_net(next_states_tensor).gather(1, next_actions)
         q_targets = rewards_tensor + self.gamma * max_next_q_values * (1 - dones_tensor)
-        loss = F.mse_loss(q_values, q_targets)
-
+        
         self.optimizer.zero_grad()
+
+        # Calculation of loss
+        loss = F.mse_loss(q_values, q_targets)
         loss.backward()
+        
+        # Apply gradients
         self.optimizer.step()
 
+        # Update the learning rate
+        self.scheduler.step()
+
+        # Updates the target network every specified number of updates to stabilize training.
         if self.count % self.target_update == 0:
             self.target_q_net.load_state_dict(self.q_net.state_dict())
 

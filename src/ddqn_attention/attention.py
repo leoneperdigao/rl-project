@@ -30,17 +30,6 @@ class Attention(torch.nn.Module):
         self.o_proj = torch.nn.Linear(embed_dim, embed_dim)
 
         self.__set_parameters()
-
-    def __set_parameters(self):
-        """Initializes the parameters of the module using Xavier uniform initialization for weights and
-        setting biases to zero. This type of initialization helps in keeping the gradient magnitudes
-        manageable, preventing vanishing or exploding gradients early in training."""
-        torch.nn.init.xavier_uniform_(self.q_proj.weight)
-        self.q_proj.bias.data.fill_(0)
-        torch.nn.init.xavier_uniform_(self.kv_proj.weight)
-        self.kv_proj.bias.data.fill_(0)
-        torch.nn.init.xavier_uniform_(self.o_proj.weight)
-        self.o_proj.bias.data.fill_(0)
         
     def forward(self, ego, oppo):
         """Forward pass of the multi-head attention mechanism.
@@ -75,3 +64,14 @@ class Attention(torch.nn.Module):
         o = self.o_proj(values)
 
         return o if is_batched else o.squeeze(0)
+    
+    def __set_parameters(self):
+        """Initializes the parameters of the module using Xavier uniform initialization for weights and
+        setting biases to zero. This type of initialization helps in keeping the gradient magnitudes
+        manageable, preventing vanishing or exploding gradients early in training."""
+        torch.nn.init.xavier_uniform_(self.q_proj.weight)
+        self.q_proj.bias.data.fill_(0)
+        torch.nn.init.xavier_uniform_(self.kv_proj.weight)
+        self.kv_proj.bias.data.fill_(0)
+        torch.nn.init.xavier_uniform_(self.o_proj.weight)
+        self.o_proj.bias.data.fill_(0)
