@@ -50,17 +50,22 @@ pip install -r requirements.txt
 Here is a basic example of how to set up and train a DDQN model with the attention mechanism using this module:
 
 ```python
+# Environment
+import gymnasium as gym
+
+# Agent
 from ddqn_attention.ddqn import DDQN
 from ddqn_attention.buffer import ReplayBuffer
 from ddqn_attention.training_helpers import train_off_policy_agent
 
 # Set up the environment, model, and buffer
-env = YourEnvironment()  # replace with your Gym environment
+highway_env = gym.make('highway-fast-v0', render_mode="rgb_array")
 buffer = ReplayBuffer(capacity=10000)
 
-agent = DDQN(action_dimension=env.action_space.n, hidden_dimension=[256, 256], device="cuda|cpu")
+agent = DDQN(action_dimension=highway_env.action_space.n, hidden_dimension=[256, 256], device="cuda|cpu")
+
 # Train the agent
-returns = train_off_policy_agent(env, agent, num_episodes=500, replay_buffer=buffer, minimal_size=1000, batch_size=64)
+returns = train_off_policy_agent(highway_env, agent, num_episodes=500, replay_buffer=buffer, minimal_size=1000, batch_size=64)
 
 # Optionally, save the trained model
 torch.save(agent.state_dict(), 'ddqn_with_attention.pt')
