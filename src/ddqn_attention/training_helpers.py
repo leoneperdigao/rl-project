@@ -81,13 +81,11 @@ def train_off_policy_agent_with_rendering(env, agent, num_episodes, replay_buffe
             for i_episode in range(int(num_episodes / 10)):
                 episode_return = 0
                 state, _ = env.reset()
-                state = filter_non_presence(state)
                 done = truncated = False
                 while not (done or truncated):
                     action = agent.take_action(state)
                     next_state, reward, done, truncated, _ = env.step(action)
                     reward *= 10
-                    next_state = filter_non_presence(next_state)
                     replay_buffer.add(state, action, reward, next_state, done)
                     state = next_state
                     episode_return += reward
