@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 
-# others
-lost-in-the-middle
+.DS_Store
+.DS_Store
