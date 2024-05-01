@@ -1,4 +1,4 @@
-# Reinforcement Learning Project - Autonomous Decision-Making in a Simulated Highway Driving Environment
+# Reinforcement Learning Project - Social DriveNet: Integrating DDQN with Social Attention for Autonomous Traffic Navigation
 
 ## Overview
 
@@ -11,13 +11,13 @@ This repository is dedicated to a Reinforcement Learning (RL) project that utili
 ### Baseline - DQN model
 
 <video controls>
-  <source src="notebooks/videos/highway_fine_tuned_baseline_performance.mp4" type="video/mp4">
+  <source src="./notebooks/videos/highway_fine_tuned_baseline_performance.mp4" type="video/mp4">
 </video>
 
 ### DDQN model with Attention Mechanism
 
 <video controls>
-  <source src="notebooks/videos/highway_ddqn_attention_best_episodes.mp4" type="video/mp4">
+  <source src="./notebooks/videos/highway_ddqn_attention_best_episodes.mp4" type="video/mp4">
 </video>
 
 ## Repository Structure
