@@ -80,7 +80,7 @@ This research project is inspired by and builds upon the paper ''Social Attentio
 As such, the project enfolds both a baseline Deep Q-Network (DQN) model and a DDQN model with Social Attention. These models are trained and evaluated leveraging the `highway-env` simulation environment, a specialised tool for autonomous driving research that provides realistic traffic scenarios and the ability to simulate intricate vehicular interactions \citep{highway-env}.
 
 \subsection{Environment Overview:}
-The `highway-env` simulation environment, developed by \citet{highway-env}, offers a versatile setting for testing and developing autonomous driving algorithms. It simulates a multi-lane highway where the autonomous agent (the ego vehicle) must navigate through traffic, avoid collisions, and make strategic driving decisions. The environment supports various traffic densities and complex driving behaviors, making it an ideal platform for studying the effects of social attention mechanisms in reinforcement learning models.
+The `highway-env` simulation environment, developed by \citet{highway-env}, offers a versatile setting for testing and developing autonomous driving algorithms. It simulates a multi-lane highway where the autonomous agent (the ego vehicle) must navigate through traffic, avoid collisions, and make strategic driving decisions. The environment supports adjustable traffic densities and complex driving behaviors, making it suitable for studying the effects of social attention mechanisms in reinforcement learning models.
 
 \textbf{States}:
 \begin{itemize}
@@ -97,7 +97,7 @@ The `highway-env` simulation environment, developed by \citet{highway-env}, offe
   Here, `LANE\_LEFT' and `LANE\_RIGHT' correspond to lane change maneuvers, `FASTER' and `SLOWER' adjust the vehicle's speed, and `IDLE' maintains the current state without changes.
 \end{itemize}
 
-For the purpose of this study, the Discrete Actions where chosen because their nature simplifies the decision-making process and aligns with the common control strategies used in vehicular navigation systems.
+For the purpose of this study, `Discrete Actions` where chosen since their nature simplifies the decision-making process and aligns with the common control strategies used in vehicular navigation systems.
 
 \textbf{Transition Dynamics}:
 \begin{itemize}
@@ -158,9 +158,6 @@ The integration of social attention mechanisms, as explored in the work by Leure
 \mathrm{Attention}(Q, K, V) = \mathrm{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right) V
 \]
 By focusing on relevant vehicles and their behaviors, social attention enables more nuanced and predictive driving strategies, potentially reducing accidents and improving traffic flow efficiency \citep{leurent2019social}.
-
-\subsection{Assessment of Techniques}
-While traditional and advanced RL methods offer substantial benefits in autonomous driving, their effectiveness heavily relies on the quality of the simulation environment, the accuracy of the state representation, and the scalability of the algorithms. Continuous research and development efforts are necessary to address these challenges, ensuring that the RL-based systems can operate reliably in real-world traffic conditions.
 
 \section{Method}
 
@@ -261,11 +258,9 @@ These results are depicted in Figures \ref{fig:exploration_rate}, \ref{fig:ep_le
 
 \subsection{DDQN Model with Social Attention}
 
-The custom DDQN model's training results, analyzed through exponential smoothing and moving average techniques, showcase substantial improvements in reward accumulation, with rewards scaled by a factor of 10 to optimize training. Both smoothing approaches indicate a stable and consistent increase in rewards, highlighting the model's enhanced learning efficiency and its ability to maintain high performance. Exponential smoothing reveals a steady gain in rewards, suggesting robust adaptability, while the moving average confirms a persistent high-level performance toward the end of training. This summary precedes a detailed analysis and comparison with the baseline model, emphasizing the DDQN's superior policy optimization capabilities in complex environments.
+The custom DDQN model's training results, analysed through exponential smoothing and moving average techniques, showcase substantial improvements in reward accumulation, with rewards scaled by a factor of 10 to optimise training. Both smoothing approaches indicate a stable and consistent increase in rewards, highlighting the model's enhanced learning efficiency and its ability to maintain high performance. Exponential smoothing reveals a steady gain in rewards, suggesting robust adaptability, while the moving average confirms a persistent high-level performance toward the end of training.
 
-Figure \ref{fig:ddqn_exponential} displays the rewards per episode as processed by exponential smoothing, a method that helps in highlighting trends by reducing the influence of outlier rewards or abrupt changes that might not represent the overall learning trajectory.
-
-The graph indicates a gradual and consistent increase in rewards, reaching a stable plateau. This pattern suggests that the DDQN model effectively learns optimal policies over time, with fewer episodes of declining performance, indicating robustness against environmental variations.
+Figure \ref{fig:ddqn_exponential} displays the rewards per episode as processed by exponential smoothing, a method that helps in highlighting trends by reducing the influence of outlier rewards or abrupt changes that might not represent the overall learning trajectory. The graph indicates a gradual and consistent increase in rewards, reaching a stable plateau. This pattern suggests that the DDQN model effectively learns optimal policies over time, with fewer episodes of declining performance, indicating robustness against environmental variations.
 
 Additionally, figure \ref{fig:ddqn_moving_avg} illustrates the rewards per episode using a moving average, which smooths out short-term fluctuations and highlights longer-term trends more clearly.
 
@@ -285,14 +280,12 @@ Additionally, figure \ref{fig:ddqn_moving_avg} illustrates the rewards per episo
 
 The moving average line (orange) clearly shows a mid-training adjustment where the rewards start to significantly rise, stabilizing at a high level towards the end of the training period. This enhancement indicates the model’s adaptation and refined strategy execution as it encountered different scenarios within the environment.
 
-Overall, both smoothing methods used for the DDQN model—exponential and moving average—provide valuable insights into the learning dynamics. Exponential smoothing gives a closer look at the model's immediate response to changes in episode conditions, while the moving average presents a broader view of the overall performance improvements. The consistency between these two methods in showing upward trends and stabilization in high rewards validates the effectiveness of the DDQN training.
-
 
 \section{Discussion}
 
 The core objective of this work was to validate the hypothesis of the enhancement of the decision-making capabilities of autonomous vehicles in dense traffic scenarios using advanced reinforcement learning techniques. The baseline DQN model served as the foundation, which we significantly built upon with the DDQN model, integrating a social attention mechanism for improved environmental interaction and decision-making.
 
-The results from the baseline DQN model indicated a competent level of performance with a clear progression in learning, as evidenced by the increase in rewards and episode lengths over training episodes. However, the custom DDQN model exhibited superior performance in several key aspects.
+The results from the baseline DQN model indicated a competent level of performance with a clear progression in learning, as evidenced by the increase in rewards and episode lengths over training episodes. However, the custom DDQN model exhibited superior performance in several key aspects, which validates the initial hypothesis.
 
 Firtly, concerning \textbf{reward accumulation}, the DDQN model demonstrated a more rapid and stable increase in rewards, a direct indication of its more effective policy optimization. The scaling of rewards by a factor of 10 within the DDQN training regimen likely contributed to this enhanced performance by amplifying the gradients and thus accelerating the learning process.
 
@@ -306,10 +299,11 @@ The findings from this study are consistent with existing literature, which sugg
 
 This study has showcased promising advancements in reinforcement learning for autonomous driving simulations, yet several challenges persist that require further exploration.
 
-Firstly, while reward scaling has expedited learning, it may mask subtleties in decision-making within complex scenarios \citep{silver2016mastering}. Future research should evaluate the effects of various scaling magnitudes on learning behaviors and performance across diverse reward dynamics. Additionally, the current simulation environment lacks the unpredictability of real-world conditions such as erratic human behavior and environmental changes \citep{dosovitskiy2017carla}. Enhancing simulation fidelity by integrating real-world variables could significantly improve model robustness.
+While reward scaling has expedited learning, it may mask subtleties in decision-making within complex scenarios \citep{silver2016mastering}. Future research should evaluate the effects of various scaling magnitudes on learning behaviors and performance across diverse reward dynamics. Additionally, the current simulation environment lacks the unpredictability of real-world conditions such as erratic human behavior, traffic rules, and environmental changes \citep{dosovitskiy2017carla}.
 
-Further investigations should explore richer and more volatile environments by incorporating real-world data, like traffic and accident statistics, to enrich the training context \citep{bojarski2016end}. Moreover, experimenting with different attention mechanisms might enable more precise information prioritization \citep{DBLP:journals/corr/VaswaniSPUJGKP17}, and integrating advanced neural network architectures, such as CNNs for spatial processing and RNNs for temporal data handling, could refine decision-making processes \citep{lecun2015deep}.
+Further work could also explore richer and more volatile environments by incorporating real-world data, like traffic and accident statistics, to enrich the training context \citep{bojarski2016end}. 
 
+Lastly, experimenting with different attention mechanisms might enable more precise information prioritization \citep{DBLP:journals/corr/VaswaniSPUJGKP17}, and integrating advanced neural network architectures, such as CNNs for spatial processing and RNNs for temporal data handling, could refine decision-making processes \citep{lecun2015deep}.
 
 \section{Personal Experience}
 
