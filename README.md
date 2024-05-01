@@ -1,15 +1,31 @@
-# Reinforcement Learning Project - Autonomous Decision Making in a Simulated Highway Driving Environment
+# Reinforcement Learning Project - Autonomous Decision-Making in a Simulated Highway Driving Environment
 
 ## Overview
 
 This repository is dedicated to a Reinforcement Learning (RL) project that utilizes Deep Q-Networks (DQN) and its variations such as Double DQN with attention mechanisms to optimize decision-making processes in a simulated highway driving environment. This project includes comprehensive notebooks, logs, models, and additional resources to guide through various RL techniques and their implementation specifics.
+
+<img src="notebooks/highway_simulation.gif" />
+
+## Agent's Performance
+
+### Baseline - DQN model
+
+<video controls>
+  <source src="notebooks/videos/highway_fine_tuned_baseline_performance.mp4" type="video/mp4">
+</video>
+
+### DDQN model with Attention Mechanism
+
+<video controls>
+  <source src="notebooks/videos/highway_ddqn_attention_best_episodes.mp4" type="video/mp4">
+</video>
 
 ## Repository Structure
 
 - **notebooks/**: Contains Jupyter notebooks illustrating the RL methods, simulation results, and analyses including visual outputs like graphs and GIFs.
 - **src/**: Source code with Python modules for the DQN models, attention mechanisms, experience buffers, and utility functions for training.
 - **models/**: Trained models in different stages and configurations, saved in PyTorch and ZIP formats.
-- **logs/**: Training logs for different model configurations, including tensorboard event files which provide a deep dive into the training performance.
+- **logs/**: Training logs for different model configurations, including Tensorboard event files which provide a deep dive into the training performance.
 - **videos/**: Recorded simulation videos demonstrating the performance of various models in the simulated environment.
 - **report/**: Contains templates, style guides, and figures for reporting the project findings.
 - **presentations/**: Contains the project pitch materials.
@@ -35,7 +51,7 @@ This repository is dedicated to a Reinforcement Learning (RL) project that utili
    tensorboard --logdir=.
    ```
 
-4. **Jupyter Notebooks**: Launch Jupyter notebooks to explore the experiments and visualizations:
+4. **Jupyter Notebooks**: Launch Jupyter Notebooks to explore the experiments and visualizations:
    ```bash
    jupyter notebook
    ```
