@@ -1,0 +1,34 @@
+sequenceDiagram
+  participant User
+  participant DDQN
+  participant QValueNet
+  participant Attention
+  participant ReplayBuffer
+
+  User->>DDQN: Provide state
+  activate DDQN
+  DDQN->>QValueNet: Forward state
+  activate QValueNet
+  QValueNet->>Attention: Apply attention
+  activate Attention
+  Attention-->>QValueNet: Attention applied
+  deactivate Attention
+  QValueNet-->>DDQN: Processed state
+  deactivate QValueNet
+  DDQN->>DDQN: Compute action
+  DDQN-->>User: Return action
+  deactivate DDQN
+
+  User->>DDQN: Provide transition (state, action, reward, next state, done)
+  activate DDQN
+  DDQN->>ReplayBuffer: Store transition
+  activate ReplayBuffer
+  ReplayBuffer-->>DDQN: Transition stored
+  deactivate ReplayBuffer
+  DDQN->>DDQN: Update model
+  DDQN->>QValueNet: Forward next state
+  QValueNet->>Attention: Apply attention
+  Attention-->>QValueNet: Attention applied
+  QValueNet-->>DDQN: Processed next state
+  DDQN-->>DDQN: Update weights
+  deactivate DDQN

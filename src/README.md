@@ -16,10 +16,23 @@ ddqn_attention/
 │   ├── buffer.py            # Implements the replay buffer for experience replay
 │   ├── ddqn.py              # Contains the main DDQN model and training routines
 │   └── training_helpers.py  # Provides additional helper functions for training
+├── docs                     # Contain all supplementary documentation, including diagrams
+│   ├── components_diagram.mermaid
+│   ├── components_diagram.png
+│   ├── sequence_diagram.mermaid
+│   └── sequence_diagram.png
 └── requirements.txt         # Lists dependencies for the module
 ```
 
-## Key Components
+## Model's Architecture
+
+<img src="./docs/components_diagram.png" />
+
+### Data Flow
+
+The sequence diagram below illustrates the information flow within the DDQN model, detailing how data moves through the system components and how they interact:
+
+<img src="./docs/sequence_diagram.png" />
 
 ### Attention Mechanism
 

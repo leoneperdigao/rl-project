@@ -1,0 +1,15 @@
+graph TD
+    A[DDQN] -->|uses| B[QValueNet]
+    A -->|stores transitions in| C[ReplayBuffer]
+    B -->|applies| D[Attention]
+    subgraph DDQN Model
+        A
+        B
+        C
+        D
+    end
+
+    style DDQN fill:#f9f,stroke:#333,stroke-width:4px
+    style QValueNet fill:#ccf,stroke:#333,stroke-width:2px
+    style ReplayBuffer fill:#fcf,stroke:#333,stroke-width:2px
+    style Attention fill:#cff,stroke:#333,stroke-width:2px
