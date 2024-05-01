@@ -155,46 +155,150 @@ While traditional and advanced RL methods offer substantial benefits in autonomo
 
 \section{Method}
 
-This study employs Reinforcement Learning (RL) to enhance decision-making in dense traffic for autonomous vehicles. We build on the baseline model of a standard Deep Q-Network (DQN), incorporating a Double Deep Q-Network (DDQN) with a novel social attention mechanism. This hybrid approach aims to address overestimation biases and improve interaction awareness with surrounding traffic.
+\subsection{Experiment Introduction}
+The experiment began with an exploration of the `highway-env` simulation environment to understand its observation and state spaces Figure~\ref{fig:initial_visual_inspection}. Initial trials involved visual inspections through random actions to gauge the environment's complexity and responsiveness, establishing a baseline understanding essential for structured algorithm application.
 
-\subsection{Baseline Model}
-Initially, our approach involves using a baseline DQN model as described by Mnih et al. \cite{mnih2015humanlevel}. The DQN serves as a foundational model from which we assess enhancements brought about by DDQN and social attention mechanisms.
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.5\textwidth]{./figures/highway_simulation_frame7.png}
+  \caption{Initial Visual Exploration of Highway-Env}
+  \label{fig:initial_visual_inspection}
+\end{figure}
 
-\subsection{Simulation Environment}
-The `highway-env` simulation platform \cite{highway-env}, offers a dynamic environment to test autonomous driving algorithms. It simulates various traffic conditions, enabling the testing of our models under different traffic densities and behaviors.
+The primary intention of the experiment was to test the hypothesis that a Double Deep Q-Network (DDQN) model, enhanced with a social attention mechanism, would significantly outperform the baseline model in navigating dense traffic scenarios.
+The experiment's structured approach, from initial exploration to detailed model optimization and evaluation, ensures comprehensive testing and validation of the proposed methods.
 
-\subsection{Advanced Model Implementation}
+\subsection{Baseline DQN Model Architecture}
+The baseline DQN model adopts a classical neural network architecture designed to approximate the optimal action-value function \( Q^*(s, a) \), facilitating robust decision-making in dynamic environments \cite{mnih2015humanlevel}:
+
 \begin{itemize}
-    \item \textbf{DDQN Model:} We extend the DQN framework by incorporating a dual estimator strategy to mitigate the overestimation bias, enhancing the accuracy of action-value predictions.
-    \item \textbf{Social Attention Mechanism:} This mechanism is integrated into the DDQN model. It prioritizes computational resources on vehicles that most significantly influence the ego vehicle’s decision-making process, improving interaction modeling with other traffic participants.
+    \item \textbf{Input Layer:} The architecture takes state inputs corresponding to environmental observations with dimensionality configured for the `highway-env`.
+    \item \textbf{Hidden Layers:} Features two hidden layers with 256 neurons each, employing ReLU activation functions \( f(x) = \max(0, x) \) to capture complex patterns in data.
+    \item \textbf{Output Layer:} Outputs Q-values for each action in the environment's action space, using linear transformation.
 \end{itemize}
 
-\subsection{Evaluation Metrics}
-Models are evaluated based on safety (collision rates), compliance and efficiency (traffic rule adherence and optimization of travel time), and operational effectiveness (through metrics like average speeds and maneuver correctness).
+This model is optimized using RMSProp, consistent with best practices for training DQNs \cite{mnih2015humanlevel}.
 
-\subsection{Hyperparameter Optimization}
-Using the Optuna framework \cite{optuna_2019}, we tune learning rates, batch sizes, and network architectures to optimize model performance under complex simulation conditions.
+\subsection{Custom DDQN with Social Attention Model Architecture}
+Our enhanced DDQN model mitigates Q-value overestimations and incorporates a domain-specific social attention mechanism for improved interaction modeling \cite{leurent2019social}:
 
-\subsection{Training and Validation}
-Models undergo rigorous episodic training within the `highway-env`, focusing on optimizing policies for safety and efficiency. Validation assesses model robustness against predefined safety and efficiency benchmarks.
+\textbf{Dual Estimator Configuration:}
+\begin{itemize}
+    \item \textbf{Policy and Target Networks:} Both networks share identical structures but feature asynchronous updates to reduce biases in value estimation, a method validated in \cite{DBLP:journals/corr/HasseltGS15}.
+    \item \textbf{Update Policy:} The target network's parameters are periodically synchronized with the policy network every 50 steps, enhancing prediction stability.
+\end{itemize}
 
-\subsection{Rationale for Method Choices}
-Our choice of integrating DDQN with social attention is driven by their demonstrated potential in accurately predicting and managing interactions in dynamic traffic scenarios, significantly enhancing policy reliability over traditional DQN approaches.
+\textbf{Social Attention Mechanism:}
+Complementing the mathematical formulation displayed earlier in this report, hereby is a pseudo code representation for the attention mechanism based on \cite{DBLP:journals/corr/VaswaniSPUJGKP17}:
 
+\begin{verbatim}
+Algorithm 1: Social Attention Mechanism
+1: procedure Attention(Q, K, V)
+2:     d_k <- size of key vectors
+3:     scores <- MatMul(Q, Transpose(K)) / sqrt(d_k)
+4:     attention_weights <- Softmax(scores)
+5:     output <- MatMul(attention_weights, V)
+6:     return output
+7: end procedure
+\end{verbatim}
 
+\textbf{Model Dynamics:}
+\begin{itemize}
+    \item \textbf{Input Transformation:} Inputs are transformed through linear layers, adapting dimensions suitable for subsequent attention processing.
+    \item \textbf{Attention Application:} The attention module processes inputs to focus selectively on significant environmental features, enhancing model responsiveness to dynamic interactions.
+    \item \textbf{Sequential Processing:} Features refined through attention are further processed by dense layers, culminating in the output layer that determines action Q-values.
+\end{itemize}
 
+The DDQN model with social attention is designed to improve the predictive accuracy and responsiveness of autonomous driving strategies by effectively utilizing dynamic traffic interactions, a concept supported by empirical improvements in traffic navigation tasks \cite{8500630, 9664628}.
+
+\subsection{Hyperparameter Tuning}
+Hyperparameter optimization was conducted using the Optuna framework. A range of values for learning rates, batch sizes, discount factors, and network architectures were defined and iteratively tested to maximize the mean reward. The optimal parameters derived from this tuning were subsequently used to retrain the baseline model, thus ensuring optimal baseline performance \cite{optuna_2019}.
+
+\subsection{Model Training and Evaluation}
+Following the implementation, both models underwent extensive training in 20.000 episodes. For DDQN, a replay buffer was also used to store and replay past transitions, enhancing the learning from previous experiences. Furthermore, the models were evaluated based on its ability to predict Q-values accurately and make optimal decisions in simulated traffic scenarios \cite{9664628}.
 
 \section{Results}
 
-A presentation of your results, showing how quickly and how well your agent(s) learn (i.e., improve their policies). Include informative baselines for comparison (e.g. the best possible performance, the performance of an average human, or the performance of an agent that selects actions randomly).
+\subsection{Baseline DQN Model}
+
+The baseline DQN model demonstrates significant learning capabilities through a structured decrease in exploration and consistent improvements in episode length and rewards. The exploration rate's rapid decline indicates an efficient transition from exploring the environment to exploiting learned strategies. Concurrently, increases in episode lengths and rewards reflect the agent's growing proficiency in navigating the environment effectively.
+
+\begin{itemize}
+    \item \textbf{Exploration Rate:} Stabilized at a low value (0.05), indicating a shift towards exploitation after initial extensive exploration. Figure \ref{fig:exploration_rate} presents the exploration rate decay over the training period, emphasizing the model's transition from exploration to exploitation.
+    \item \textbf{Episode Length:} Showed a progressive increase, suggesting improved decision-making that prolongs episodes. Figure \ref{fig:ep_len_mean} shows the mean episode length over training episodes, providing insight into the agent's ability to maintain effective interaction over time.
+    \item \textbf{Episode Rewards:} Exhibited a steady rise, indicative of the agent's enhanced ability to accrue higher rewards. Figure \ref{fig:reward_mean} illustrates the progression of mean rewards per episode, highlighting the agent's increasing efficiency in reward accumulation.
+\end{itemize}
+
+These results are depicted in Figures \ref{fig:exploration_rate}, \ref{fig:ep_len_mean}, and \ref{fig:reward_mean}, illustrating the quantitative improvements across these metrics.
+
+\begin{figure}[ht]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+      \includegraphics[width=\linewidth]{./figures/dqn_baseline_ep_len_mean.png}
+      \caption{Mean episode length}
+      \label{fig:ep_len_mean}
+  \end{minipage}
+  \begin{minipage}{0.48\textwidth}
+      \includegraphics[width=\linewidth]{./figures/dqn_baseline_ep_reward_mean.png}
+      \caption{Mean rewards per episode}
+      \label{fig:reward_mean}
+  \end{minipage}
+  \begin{minipage}{0.48\textwidth}
+    \includegraphics[width=\linewidth]{./figures/ddn_baseline_exploration_rate.png}
+    \caption{Exploration rate decay}
+    \label{fig:exploration_rate}
+  \end{minipage}\hfill
+\end{figure}
+
+\subsection{DDQN Model with Social Attention}
+
+The custom DDQN model's training results, analyzed through exponential smoothing and moving average techniques, showcase substantial improvements in reward accumulation, with rewards scaled by a factor of 10 to optimize training. Both smoothing approaches indicate a stable and consistent increase in rewards, highlighting the model's enhanced learning efficiency and its ability to maintain high performance. Exponential smoothing reveals a steady gain in rewards, suggesting robust adaptability, while the moving average confirms a persistent high-level performance toward the end of training. This summary precedes a detailed analysis and comparison with the baseline model, emphasizing the DDQN's superior policy optimization capabilities in complex environments.
+
+Figure \ref{fig:ddqn_exponential} displays the rewards per episode as processed by exponential smoothing, a method that helps in highlighting trends by reducing the influence of outlier rewards or abrupt changes that might not represent the overall learning trajectory.
+
+The graph indicates a gradual and consistent increase in rewards, reaching a stable plateau. This pattern suggests that the DDQN model effectively learns optimal policies over time, with fewer episodes of declining performance, indicating robustness against environmental variations.
+
+Additionally, figure \ref{fig:ddqn_moving_avg} illustrates the rewards per episode using a moving average, which smooths out short-term fluctuations and highlights longer-term trends more clearly.
+
+\begin{figure}[ht]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+      \includegraphics[width=\linewidth]{./figures/ddqn_exponential_smoothing.png}
+      \caption{Rewards per episode with exponential smoothing for the DDQN model.}
+      \label{fig:ddqn_exponential}
+  \end{minipage}
+  \begin{minipage}{0.48\textwidth}
+      \includegraphics[width=\linewidth]{./figures/ddqn_moving_avg.png}
+      \caption{Rewards per episode with a moving average for the DDQN model.}
+      \label{fig:ddqn_moving_avg}
+  \end{minipage}
+\end{figure}
+
+The moving average line (orange) clearly shows a mid-training adjustment where the rewards start to significantly rise, stabilizing at a high level towards the end of the training period. This enhancement indicates the model’s adaptation and refined strategy execution as it encountered different scenarios within the environment.
+
+Overall, both smoothing methods used for the DDQN model—exponential and moving average—provide valuable insights into the learning dynamics. Exponential smoothing gives a closer look at the model's immediate response to changes in episode conditions, while the moving average presents a broader view of the overall performance improvements. The consistency between these two methods in showing upward trends and stabilization in high rewards validates the effectiveness of the DDQN training.
+
 
 \section{Discussion}
 
-An evaluation of how well you solved your chosen problem.
+The core objective of this research was to enhance the decision-making capabilities of autonomous vehicles in dense traffic scenarios using advanced reinforcement learning techniques. The baseline DQN model served as the foundation, which we significantly built upon with the DDQN model, integrating a social attention mechanism for improved environmental interaction and decision-making.
+
+The results from the baseline DQN model indicated a competent level of performance with a clear progression in learning, as evidenced by the increase in rewards and episode lengths over training episodes. However, the custom DDQN model exhibited superior performance in several key aspects:
+
+Concerning \textbf{reward accumulation}, the DDQN model demonstrated a more rapid and stable increase in rewards, a direct indication of its more effective policy optimization. The scaling of rewards by a factor of 10 within the DDQN training regimen likely contributed to this enhanced performance by amplifying the gradients and thus accelerating the learning process.
+
+As for the \textbf{policy stability}, while the baseline DQN showed fluctuations in episode rewards and lengths, the DDQN maintained a more consistent level of high performance. This stability can be attributed to the dual architecture of the DDQN, which reduces the overestimation biases inherent in the standard DQN model \cite{DBLP:journals/corr/HasseltGS15}.
+
+Furthermore, regardings \textbf{adaptability}, the integration of a social attention mechanism in the DDQN model allowed for a better adaptation to dynamic traffic scenarios, reflecting a sophisticated understanding of the environment that surpasses the baseline model's capabilities \cite{leurent2019social}.
+
+The findings from this study are consistent with existing literature, which suggests that DDQN models can significantly outperform DQN models in complex decision-making tasks \cite{8500630}. The application of these findings to autonomous driving confirms the potential of advanced reinforcement learning models enhanced by attention mechanisms, not only in achieving higher performance metrics but also in driving practical improvements in autonomous vehicle technology.
 
 \section{Future Work}
 
-A discussion of potential future work you would complete if you had more time.
+Despite the promising results, this study has limitations that must be addressed in future research. The scaling of rewards, while effective in enhancing learning speed, may obscure the true challenge of decision-making in more nuanced scenarios. Additionally, the simulation environment, while robust, does not fully capture the unpredictability of real-world driving conditions.
+
+Future work will focus on testing these models in more varied and unpredictable environments, possibly integrating real-world data into the training process. Further, exploring additional modifications to the reinforcement learning algorithms, such as varying the attention mechanisms or integrating other forms of deep learning, could provide new insights into the capabilities of autonomous systems.
+
 
 \section{Personal Experience}
 
