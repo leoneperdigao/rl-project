@@ -79,8 +79,8 @@ This research project is inspired by and builds upon the paper ''Social Attentio
 
 As such, the project enfolds both a baseline Deep Q-Network (DQN) model and a DDQN model with Social Attention. These models are trained and evaluated leveraging the `highway-env` simulation environment, a specialised tool for autonomous driving research that provides realistic traffic scenarios and the ability to simulate intricate vehicular interactions \citep{highway-env}.
 
-\textbf{Environment Description:}
-\par The `highway-env` simulation environment, developed by \citet{highway-env}, offers a versatile setting for testing and developing autonomous driving algorithms. It simulates a multi-lane highway where the autonomous agent (the ego vehicle) must navigate through traffic, avoid collisions, and make strategic driving decisions. The environment supports various traffic densities and complex driving behaviors, making it an ideal platform for studying the effects of social attention mechanisms in reinforcement learning models.
+\subsection{Environment Overview:}
+The `highway-env` simulation environment, developed by \citet{highway-env}, offers a versatile setting for testing and developing autonomous driving algorithms. It simulates a multi-lane highway where the autonomous agent (the ego vehicle) must navigate through traffic, avoid collisions, and make strategic driving decisions. The environment supports various traffic densities and complex driving behaviors, making it an ideal platform for studying the effects of social attention mechanisms in reinforcement learning models.
 
 \textbf{States}:
 \begin{itemize}
@@ -89,12 +89,15 @@ As such, the project enfolds both a baseline Deep Q-Network (DQN) model and a DD
 
 \textbf{Actions}:
 \begin{itemize}
+  \item \textbf{Continuous Actions}: The ContinuousAction type allows the agent to directly set the low-level controls of the vehicle kinematics, namely the throttle $a$ and steering angle $\delta$.
   \item \textbf{Discrete Actions}: The action space is discrete, encompassing a set of quantized decision options that the learning agent can execute. These actions typically include:
     \[
     a_t \in \{\mathbf{LANE\_LEFT}, \mathbf{IDLE}, \mathbf{LANE\_RIGHT}, \mathbf{FASTER}, \mathbf{SLOWER}\}
     \]
-  Here, `LANE\_LEFT' and `LANE\_RIGHT' correspond to lane change maneuvers, `FASTER' and `SLOWER' adjust the vehicle's speed, and `IDLE' maintains the current state without changes. The discrete nature of these actions simplifies the decision-making process and aligns with the common control strategies used in vehicular navigation systems.
+  Here, `LANE\_LEFT' and `LANE\_RIGHT' correspond to lane change maneuvers, `FASTER' and `SLOWER' adjust the vehicle's speed, and `IDLE' maintains the current state without changes.
 \end{itemize}
+
+For the purpose of this study, the Discrete Actions where chosen because their nature simplifies the decision-making process and aligns with the common control strategies used in vehicular navigation systems.
 
 \textbf{Transition Dynamics}:
 \begin{itemize}
@@ -113,7 +116,7 @@ As such, the project enfolds both a baseline Deep Q-Network (DQN) model and a DD
     \[
     R(s_t, a_t) = -\gamma \|\mathbf{s}_t - \mathbf{s}_{\mathbf{goal}}\|_p - \beta \cdot \mathbf{collision}
     \]
-  where $\|\cdot\|_p$ denotes the p-norm distance to the goal state $\mathbf{s}_{\mathbf{goal}}$, and $\gamma$ is a weighting factor. Nonetheless, this reward function variation is not directly in the scope of this work.
+  where $\|\cdot\|_p$ denotes the p-norm distance to the goal state $\mathbf{s}_{\mathbf{goal}}$, and $\gamma$ is a weighting factor. Nonetheless, this reward function variation is not part of the scope of this work.
 \end{itemize}
 
 This framework sets up the autonomous system to learn effective driving policies through simulation, optimizing for both efficiency and safety in complex, densely populated traffic scenarios. The use of social attention mechanisms aims to dynamically incorporate the intentions and relative positions of other traffic participants into the decision-making process, enhancing the overall intelligence and responsiveness of the driving system.
@@ -161,7 +164,7 @@ While traditional and advanced RL methods offer substantial benefits in autonomo
 
 \section{Method}
 
-\subsection{Experiment Introduction}
+\subsection{Experiment}
 The experiment began with an exploration of the `highway-env` simulation environment to understand its observation and state spaces Figure~\ref{fig:initial_visual_inspection}. Initial trials involved visual inspections through random actions to gauge the environment's complexity and responsiveness, establishing a baseline understanding essential for structured algorithm application.
 
 \begin{figure}[ht]
@@ -186,7 +189,7 @@ The baseline DQN model adopts a classical neural network architecture designed t
 This model is optimized using RMSProp, consistent with best practices for training DQNs \citep{mnih2015humanlevel}.
 
 \subsection{Custom DDQN with Social Attention Model Architecture}
-Our enhanced DDQN model mitigates Q-value overestimations and incorporates a domain-specific social attention mechanism for improved interaction modeling \citep{leurent2019social}:
+The enhanced DDQN model mitigates Q-value overestimations and incorporates a domain-specific social attention mechanism for improved interaction modeling \citep{leurent2019social}:
 
 \textbf{Dual Estimator Configuration:}
 \begin{itemize}
@@ -195,7 +198,7 @@ Our enhanced DDQN model mitigates Q-value overestimations and incorporates a dom
 \end{itemize}
 
 \textbf{Social Attention Mechanism:}
-Complementing the mathematical formulation displayed earlier in this report, hereby is a pseudo code representation for the attention mechanism based on \citep{DBLP:journals/corr/VaswaniSPUJGKP17}:
+The Attention Mechanism pseudocode \citep{DBLP:journals/corr/VaswaniSPUJGKP17}, complementing the mathematical formulation displayed earlier in this report, is defined as:
 
 \begin{verbatim}
 Algorithm 1: Social Attention Mechanism
@@ -287,34 +290,36 @@ Overall, both smoothing methods used for the DDQN model—exponential and moving
 
 \section{Discussion}
 
-The core objective of this research was to enhance the decision-making capabilities of autonomous vehicles in dense traffic scenarios using advanced reinforcement learning techniques. The baseline DQN model served as the foundation, which we significantly built upon with the DDQN model, integrating a social attention mechanism for improved environmental interaction and decision-making.
+The core objective of this work was to validate the hypothesis of the enhancement of the decision-making capabilities of autonomous vehicles in dense traffic scenarios using advanced reinforcement learning techniques. The baseline DQN model served as the foundation, which we significantly built upon with the DDQN model, integrating a social attention mechanism for improved environmental interaction and decision-making.
 
-The results from the baseline DQN model indicated a competent level of performance with a clear progression in learning, as evidenced by the increase in rewards and episode lengths over training episodes. However, the custom DDQN model exhibited superior performance in several key aspects:
+The results from the baseline DQN model indicated a competent level of performance with a clear progression in learning, as evidenced by the increase in rewards and episode lengths over training episodes. However, the custom DDQN model exhibited superior performance in several key aspects.
 
-Concerning \textbf{reward accumulation}, the DDQN model demonstrated a more rapid and stable increase in rewards, a direct indication of its more effective policy optimization. The scaling of rewards by a factor of 10 within the DDQN training regimen likely contributed to this enhanced performance by amplifying the gradients and thus accelerating the learning process.
+Firtly, concerning \textbf{reward accumulation}, the DDQN model demonstrated a more rapid and stable increase in rewards, a direct indication of its more effective policy optimization. The scaling of rewards by a factor of 10 within the DDQN training regimen likely contributed to this enhanced performance by amplifying the gradients and thus accelerating the learning process.
 
 As for the \textbf{policy stability}, while the baseline DQN showed fluctuations in episode rewards and lengths, the DDQN maintained a more consistent level of high performance. This stability can be attributed to the dual architecture of the DDQN, which reduces the overestimation biases inherent in the standard DQN model \citep{DBLP:journals/corr/HasseltGS15}.
 
-Furthermore, regardings \textbf{adaptability}, the integration of a social attention mechanism in the DDQN model allowed for a better adaptation to dynamic traffic scenarios, reflecting a sophisticated understanding of the environment that surpasses the baseline model's capabilities \citep{leurent2019social}.
+Lastly, regarding \textbf{adaptability}, the integration of a social attention mechanism in the DDQN model allowed for a better adaptation to dynamic traffic scenarios, reflecting a sophisticated understanding of the environment that surpasses the baseline model's capabilities \citep{leurent2019social}.
 
 The findings from this study are consistent with existing literature, which suggests that DDQN models can significantly outperform DQN models in complex decision-making tasks \citep{8500630}. The application of these findings to autonomous driving confirms the potential of advanced reinforcement learning models enhanced by attention mechanisms, not only in achieving higher performance metrics but also in driving practical improvements in autonomous vehicle technology.
 
 \section{Future Work}
 
-Despite the promising results, this study has limitations that must be addressed in future research. The scaling of rewards, while effective in enhancing learning speed, may obscure the true challenge of decision-making in more nuanced scenarios. Additionally, the simulation environment, while robust, does not fully capture the unpredictability of real-world driving conditions.
+This study has showcased promising advancements in reinforcement learning for autonomous driving simulations, yet several challenges persist that require further exploration.
 
-Future work will focus on testing these models in more varied and unpredictable environments, possibly integrating real-world data into the training process. Further, exploring additional modifications to the reinforcement learning algorithms, such as varying the attention mechanisms or integrating other forms of deep learning, could provide new insights into the capabilities of autonomous systems.
+Firstly, while reward scaling has expedited learning, it may mask subtleties in decision-making within complex scenarios \citep{silver2016mastering}. Future research should evaluate the effects of various scaling magnitudes on learning behaviors and performance across diverse reward dynamics. Additionally, the current simulation environment lacks the unpredictability of real-world conditions such as erratic human behavior and environmental changes \citep{dosovitskiy2017carla}. Enhancing simulation fidelity by integrating real-world variables could significantly improve model robustness.
+
+Further investigations should explore richer and more volatile environments by incorporating real-world data, like traffic and accident statistics, to enrich the training context \citep{bojarski2016end}. Moreover, experimenting with different attention mechanisms might enable more precise information prioritization \citep{DBLP:journals/corr/VaswaniSPUJGKP17}, and integrating advanced neural network architectures, such as CNNs for spatial processing and RNNs for temporal data handling, could refine decision-making processes \citep{lecun2015deep}.
 
 
 \section{Personal Experience}
 
-This project has been both challenging and immensely rewarding. Initially, the project was envisioned as a collaborative effort involving a group of three students. However, due to a lack of responsiveness from my peers, I found myself undertaking this complex task alone. This shift from a collaborative to an individual effort necessitated a reassessment of the project's scope and timelines, and eventually, I had to communicate with our tutor to request permission to complete the project solo and request a coursework extension.
+This project was both challenging and immensely rewarding. Initially planned as a group endeavor with three students, I had to proceed alone due to unresponsive peers. This shift to a solo effort required redefining the project's scope and timelines and necessitated negotiating an extension with our tutor.
 
-The transition to working independently on such a demanding project, coupled with my commitments to a full-time job, introduced significant stress and workload challenges. The intensive nature of the research and the extensive amount of work required to implement and fine-tune the reinforcement learning models were daunting at times.
+Working independently on this demanding project, alongside a full-time job, presented significant stress and workload challenges. The depth of research and the extensive effort needed to implement and fine-tune the reinforcement learning models were at times overwhelming.
 
-Despite these challenges, the project was deeply gratifying. Engaging directly with the field of autonomous vehicles—a domain that I find exceptionally exciting—was a profoundly enriching experience. The process of building, testing, and refining the DDQN model, and seeing firsthand the improvements in learning and decision-making capabilities of the model, was particularly satisfying.
+Despite these hurdles, the project was very satisfying. Engaging with the field of autonomous vehicles, an area I am passionate about, was particularly rewarding. The process of building, testing, and enhancing the DDQN model, and observing firsthand its improved performance, was gratifying.
 
-Moreover, the project served as a potent reminder of the resilience and adaptability required in research. It pushed me to develop new skills, both technical and personal, enhancing my ability to work independently and to navigate unforeseen challenges effectively.
+This experience underscored the resilience and adaptability required in academia. It drove me to develop new skills, enhancing my capability to work independently and manage unexpected challenges effectively.
 
 \small
 \bibliography{references}
@@ -322,9 +327,30 @@ Moreover, the project served as a potent reminder of the resilience and adaptabi
 \normalsize
 \newpage
 \section*{Appendices}
-If you have additional content that you would like to include in the appendices, please do so here.
-There is no limit to the length of your appendices, but we are not obliged to read them in their entirety while marking. The main body of your report should contain all essential information, and content in the appendices should be clearly referenced where it's needed elsewhere.
-\subsection*{Appendix A: Example Appendix 1}
-\subsection*{Appendix B: Example Appendix 2}
+\section*{Appendix A: Hyperparameter Selection}
+
+The selection and optimization of hyperparameters were critical to the performance of both the baseline DQN and the custom DDQN models in this project. These parameters were initially chosen based on established practices within the literature and subsequently fine-tuned to optimize each model's learning efficacy and performance in the simulated autonomous driving environment.
+
+\subsection*{Initial Hyperparameter Setup}
+The initial hyperparameters for both models were selected based on conventional values recommended in seminal reinforcement learning studies and adjusted through preliminary experimental runs to suit our specific simulation settings.
+
+\subsection*{Automated Hyperparameter Optimization}
+To systematically determine the most effective hyperparameters, we employed the Optuna framework, which uses Bayesian optimization to explore the parameter space efficiently. This approach was instrumental in refining the hyperparameters for both models, with the objective to maximize the cumulative rewards obtained per episode.
+
+\subsection*{Final Hyperparameters for DDQN Model}
+The optimization process identified the following set of hyperparameters as optimal for the DDQN model:
+
+\begin{itemize}
+    \item \textbf{Learning Rate:} \(0.002265898105933512\), which provided a balance between fast convergence and stability in updates.
+    \item \textbf{Discount Factor (\(\gamma\)):} \(0.7093581079384662\), reflecting a preference for rewards in the near to medium term, which suited the dynamic conditions of the driving simulation.
+    \item \textbf{Exploration Rate (\(\epsilon\)):} Initially set at \(0.8\) and decayed over time, ensuring a robust exploration of the action space early in training.
+    \item \textbf{Batch Size:} \(128\), enabling the model to learn from a broader range of experiences in each update, enhancing the generalization of the learned policies.
+    \item \textbf{Target Update Frequency:} Every \(100\) steps, providing a good balance between stability and responsiveness in updating the target network.
+    \item \textbf{Hidden Dimensions:} Layers with \(256, 256\) neurons, ensuring sufficient complexity to model the decision-making process effectively.
+\end{itemize}
+
+A similar strategy was employed for tuning the baseline DQN model, using Optuna to explore various configurations. Although the specific optimal parameters varied slightly due to differences in model architecture, the approach fundamentally remained consistent between the two models.
+
+Future work could continue to refine these parameters and explore additional adjustments to further improve the models' effectiveness in increasingly complex driving scenarios.
 
 \end{document}
