@@ -75,12 +75,12 @@
 
 \section{Problem Definition}
 
-This research project is inspired by and builds upon the paper ''Social Attention for Autonomous Decision-Making in Dense Traffic'' \citep{leurent2019social} with significant modifications aimed at exploring the efficacy of Double Deep Q-Network (DDQN) in complex traffic scenarios. This study aims to validate a possible decision-making enhancement in dense traffic by integrating social attention mechanisms, a novel approach designed to model and predict the behaviors of surrounding drivers in a dynamic and densely populated environment.
+This research project is inspired by and builds upon the paper "Social Attention for Autonomous Decision-Making in Dense Traffic" \citep{leurent2019social} with significant modifications aimed at exploring the efficacy of Double Deep Q-Network (DDQN) in complex traffic scenarios. This study aims to validate a possible decision-making enhancement in dense traffic by integrating social attention mechanisms, a novel approach designed to model and predict the behaviors of surrounding drivers in a dynamic and densely populated environment.
 
-As such, the project enfolds both a baseline Deep Q-Network (DQN) model and a DDQN model with Social Attention. These models are trained and evaluated leveraging the `highway-env` simulation environment, a specialised tool for autonomous driving research that provides realistic traffic scenarios and the ability to simulate intricate vehicular interactions \citep{highway-env}.
+As such, the project enfolds both a baseline Deep Q-Network (DQN) model and a DDQN model with Social Attention. These models are trained and evaluated leveraging the "highway-env" simulation environment, a specialised tool for autonomous driving research that provides realistic traffic scenarios and the ability to simulate intricate vehicular interactions \citep{highway-env}.
 
 \subsection{Environment Overview:}
-The `highway-env` simulation environment, developed by \citet{highway-env}, offers a versatile setting for testing and developing autonomous driving algorithms. It simulates a multi-lane highway where the autonomous agent (the ego vehicle) must navigate through traffic, avoid collisions, and make strategic driving decisions. The environment supports adjustable traffic densities and complex driving behaviors, making it suitable for studying the effects of social attention mechanisms in reinforcement learning models.
+The "highway-env" simulation environment, developed by \citet{highway-env}, offers a versatile setting for testing and developing autonomous driving algorithms. It simulates a multi-lane highway where the autonomous agent (the ego vehicle) must navigate through traffic, avoid collisions, and make strategic driving decisions. The environment supports adjustable traffic densities and complex driving behaviors, making it suitable for studying the effects of social attention mechanisms in reinforcement learning models.
 
 \textbf{States}:
 \begin{itemize}
@@ -97,7 +97,7 @@ The `highway-env` simulation environment, developed by \citet{highway-env}, offe
   Here, `LANE\_LEFT' and `LANE\_RIGHT' correspond to lane change maneuvers, `FASTER' and `SLOWER' adjust the vehicle's speed, and `IDLE' maintains the current state without changes.
 \end{itemize}
 
-For the purpose of this study, `Discrete Actions` where chosen since their nature simplifies the decision-making process and aligns with the common control strategies used in vehicular navigation systems.
+For the purpose of this study, "Discrete Actions" where chosen since their nature simplifies the decision-making process and aligns with the common control strategies used in vehicular navigation systems.
 
 \textbf{Transition Dynamics}:
 \begin{itemize}
@@ -162,7 +162,7 @@ By focusing on relevant vehicles and their behaviors, social attention enables m
 \section{Method}
 
 \subsection{Experiment}
-The experiment began with an exploration of the `highway-env` simulation environment to understand its observation and state spaces Figure~\ref{fig:initial_visual_inspection}. Initial trials involved visual inspections through random actions to gauge the environment's complexity and responsiveness, establishing a baseline understanding essential for structured algorithm application.
+The experiment began with an exploration of the "highway-env" simulation environment to understand its observation and state spaces Figure~\ref{fig:initial_visual_inspection}. Initial trials involved visual inspections through random actions to gauge the environment's complexity and responsiveness, establishing a baseline understanding essential for structured algorithm application.
 
 \begin{figure}[ht]
   \centering
@@ -178,7 +178,7 @@ The experiment's structured approach, from initial exploration to detailed model
 The baseline DQN model adopts a classical neural network architecture designed to approximate the optimal action-value function \( Q^*(s, a) \), facilitating robust decision-making in dynamic environments \citep{mnih2015humanlevel}:
 
 \begin{itemize}
-    \item \textbf{Input Layer:} The architecture takes state inputs corresponding to environmental observations with dimensionality configured for the `highway-env`.
+    \item \textbf{Input Layer:} The architecture takes state inputs corresponding to environmental observations with dimensionality configured for the "highway-env".
     \item \textbf{Hidden Layers:} Features two hidden layers with 256 neurons each, employing ReLU activation functions \( f(x) = \max(0, x) \) to capture complex patterns in data.
     \item \textbf{Output Layer:} Outputs Q-values for each action in the environment's action space, using linear transformation.
 \end{itemize}
@@ -287,7 +287,7 @@ The core objective of this work was to validate the hypothesis of the enhancemen
 
 The results from the baseline DQN model indicated a competent level of performance with a clear progression in learning, as evidenced by the increase in rewards and episode lengths over training episodes. However, the custom DDQN model exhibited superior performance in several key aspects, which validates the initial hypothesis.
 
-Firtly, concerning \textbf{reward accumulation}, the DDQN model demonstrated a more rapid and stable increase in rewards, a direct indication of its more effective policy optimization. The scaling of rewards by a factor of 10 within the DDQN training regimen likely contributed to this enhanced performance by amplifying the gradients and thus accelerating the learning process.
+Firstly, concerning \textbf{reward accumulation}, the DDQN model demonstrated a more rapid and stable increase in rewards, a direct indication of its more effective policy optimization. The scaling of rewards by a factor of 10 within the DDQN training regimen likely contributed to this enhanced performance by amplifying the gradients and thus accelerating the learning process.
 
 As for the \textbf{policy stability}, while the baseline DQN showed fluctuations in episode rewards and lengths, the DDQN maintained a more consistent level of high performance. This stability can be attributed to the dual architecture of the DDQN, which reduces the overestimation biases inherent in the standard DQN model \citep{DBLP:journals/corr/HasseltGS15}.
 
@@ -309,7 +309,7 @@ Lastly, experimenting with different attention mechanisms might enable more prec
 
 This project was both challenging and immensely rewarding. Initially planned as a group endeavor with three students, I had to proceed alone due to unresponsive peers. This shift to a solo effort required redefining the project's scope and timelines and necessitated negotiating an extension with our tutor.
 
-Working independently on this demanding project, alongside a full-time job, presented significant stress and workload challenges. The depth of research and the extensive effort needed to implement and fine-tune the reinforcement learning models were at times overwhelming.
+Working independently on this demanding project, alongside a full-time job and other personal personal commitments, presented significant stress and workload challenges. The depth of research and the extensive effort needed to implement and fine-tune the reinforcement learning models were at times overwhelming.
 
 Despite these hurdles, the project was very satisfying. Engaging with the field of autonomous vehicles, an area I am passionate about, was particularly rewarding. The process of building, testing, and enhancing the DDQN model, and observing firsthand its improved performance, was gratifying.
 
