@@ -31,12 +31,12 @@ class Attention(torch.nn.Module):
 
         self.__set_parameters()
         
-    def forward(self, ego, oppo):
+    def forward(self, ego, opponent):
         """Forward pass of the multi-head attention mechanism.
 
         Parameters:
         ego (Tensor): The ego tensor.
-        oppo (Tensor): The opponent tensor.
+        opponent (Tensor): The opponent tensor.
 
         Returns:
         Tensor: The output tensor after applying attention, adjusted to input batch format.
@@ -45,12 +45,12 @@ class Attention(torch.nn.Module):
         is_batched = ego.dim() > 1
         if not is_batched:
             ego = ego.unsqueeze(0)
-            oppo = oppo.unsqueeze(0)
+            opponent = opponent.unsqueeze(0)
         batch_size = ego.size(0)
 
         # Compute queries, keys, and values with appropriate reshaping and permutation
         q = self.q_proj(ego).view(batch_size, self.num_heads, 1, self.head_dim)
-        kv = self.kv_proj(oppo).view(batch_size, oppo.size(1), self.num_heads, 2*self.head_dim)
+        kv = self.kv_proj(opponent).view(batch_size, opponent.size(1), self.num_heads, 2*self.head_dim)
         kv = kv.permute(0, 2, 1, 3)
         k, v = kv.chunk(2, dim=-1)
 

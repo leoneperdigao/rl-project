@@ -28,33 +28,15 @@ logging.basicConfig(
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-def moving_average(a, window_size):
-    """
-    Calculates the moving average of the provided array using the specified window size.
-
-    Args:
-    a (np.array): Input array.
-    window_size (int): The number of elements to consider for each moving average calculation.
-
-    Returns:
-    np.array: The moving average of the array.
-    """
-    cumulative_sum = np.cumsum(np.insert(a, 0, 0))
-    middle = (cumulative_sum[window_size:] - cumulative_sum[:-window_size]) / window_size
-    r = np.arange(1, window_size, 2)
-    begin = np.cumsum(a[:window_size-1])[::2] / r
-    end = (np.cumsum(a[:-window_size:-1])[::2] / r)[::-1]
-    return np.concatenate((begin, middle, end))
-
-
-def train_agent(
+def train(
         env: gym.Env, 
         agent: DDQN, 
         num_episodes: int,
         replay_buffer: ReplayBuffer, 
         minimal_size: int, 
         batch_size: int,
-        with_rendering: bool = False
+        reward_scaling_factor: float = 10,
+        with_rendering: bool = False,
     ):
     """
     Trains an off-policy reinforcement learning agent using the given environment, replay buffer, and agent configuration.
@@ -80,9 +62,9 @@ def train_agent(
         done = truncated = False
         
         while not (done or truncated):
-            action = agent.take_action(state)
+            action = agent.act(state)
             next_state, reward, done, truncated, _ = env.step(action)
-            reward *= 10  # Reward scaling for better training performance
+            reward *= reward_scaling_factor  # Reward scaling for better training performance
             replay_buffer.add(state, action, reward, next_state, done)
             state = next_state
             episode_reward += reward

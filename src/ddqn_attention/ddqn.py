@@ -90,7 +90,7 @@ class DDQN(torch.nn.Module):
         self.target_update = target_update
         self.count = 0
 
-    def take_action(self, state):
+    def act(self, state):
         """Selects an action using epsilon-greedy strategy based on the current Q-value approximations."""
         if self.training and np.random.random() < self.epsilon:
             action = np.random.randint(self.action_dim)
@@ -102,14 +102,9 @@ class DDQN(torch.nn.Module):
             action = self.q_net(state_tensor).argmax().item()
         return action
 
-    def max_q_value(self, state):
-        """Returns the maximum Q-value for a given state."""
-        state = torch.tensor([state], dtype=torch.float).to(self.device)
-        return self.q_net(state).max().item()
-
-    def eps_decay(self):
+    def eps_decay(self, factor: float = 0.9):
         """Decays epsilon value multiplicatively to reduce the exploration over time."""
-        self.epsilon *= 0.9
+        self.epsilon *= factor
 
     def update(self, transition_dict: dict):
         """Performs a single update step on the Q-network based on a batch of transitions."""
