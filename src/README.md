@@ -15,6 +15,7 @@ ddqn_attention/
 │   ├── attention.py         # Defines the multi-head attention mechanism
 │   ├── buffer.py            # Implements the replay buffer for experience replay
 │   ├── ddqn.py              # Contains the main DDQN model and training routines
+│   └── eval_helpers.py      # Provides helper functions for model evaluation
 │   └── training_helpers.py  # Provides additional helper functions for training
 ├── docs                     # Contain all supplementary documentation, including diagrams
 │   ├── components_diagram.mermaid
