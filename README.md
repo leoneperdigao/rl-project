@@ -23,10 +23,12 @@ This repository is dedicated to a Reinforcement Learning (RL) project that utili
 ## Repository Structure
 
 - **notebooks/**: Contains Jupyter notebooks illustrating the RL methods, simulation results, and analyses including visual outputs like graphs and GIFs.
+   - **images/**: Images with the results graphs
+   - **models/**: Trained models in different stages and configurations, saved in PyTorch and ZIP formats.
+   - **logs/**: Training logs for different model configurations, including Tensorboard event files which provide a deep dive into the training performance.
+   - **videos/**: Recorded simulation videos demonstrating the performance of various models in the simulated environment.
+- **docs**: Contain the Group Contribution form.
 - **src/**: Source code with Python modules for the DQN models, attention mechanisms, experience buffers, and utility functions for training.
-- **models/**: Trained models in different stages and configurations, saved in PyTorch and ZIP formats.
-- **logs/**: Training logs for different model configurations, including Tensorboard event files which provide a deep dive into the training performance.
-- **videos/**: Recorded simulation videos demonstrating the performance of various models in the simulated environment.
 - **report/**: Contains templates, style guides, and figures for reporting the project findings.
 - **presentations/**: Contains the project pitch materials.
 
